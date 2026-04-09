@@ -11,7 +11,10 @@ import { interviewReportModel } from "../model/interviewReport.model.js"
  */
 async function generateInterviewController(req, res) {
     const resumeFile = req.file
-
+    
+    if(!req.file){
+        return res.status(400).json({ message: "Resume file is required" });
+    }
     const resumeContent = await new PDFParse(Uint8Array.from(req.file.buffer)).getText()
     const { selfDescription, jobDescription } = req.body
 
