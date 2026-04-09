@@ -88,8 +88,8 @@ const loginUserController = async (req,res)=>{
     )
     res.cookie("token", token,{
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
+        secure: true,
+        sameSite: "None"
     })
     res.status(200).json({
         message: "user logged in successfully",
