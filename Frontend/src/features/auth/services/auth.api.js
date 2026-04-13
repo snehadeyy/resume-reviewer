@@ -1,7 +1,9 @@
 import axios from "axios"
 
+const API = import.meta.env.VITE_API_URL;
+
 const api = axios.create({
-    baseURL: "https://resume-reviewer-backend-2tfo.onrender.com",
+    baseURL: API,
     withCredentials: true
 })
 

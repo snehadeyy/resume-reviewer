@@ -4,12 +4,30 @@ import cors from "cors"
 
 const app = express()
 
+// const ORIGIN = process.env.CORS_ORIGIN
+
 app.use(express.json())
 app.use(cookieParser())
+// app.use(cors({
+//     origin: ORIGIN || "http://localhost:5173",
+//     credentials: true
+// }))
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://resume-reviewer-frontend-ewwj.onrender.com"
+];
+
 app.use(cors({
-    origin: "https://resume-reviewer-frontend-ewwj.onrender.com",
-    credentials: true
-}))
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS blocked"));
+    }
+  },
+  credentials: true
+}));
 
 /* Require all the routes here */
 import authRouter  from "./routes/auth.routes.js"
