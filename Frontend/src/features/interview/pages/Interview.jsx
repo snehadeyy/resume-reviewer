@@ -13,7 +13,7 @@ const NAV_ITEMS = [
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 const QuestionCard = ({ item, index }) => {
-    const [ open, setOpen ] = useState(false)
+    const [open, setOpen] = useState(false)
     return (
         <div className='q-card'>
             <div className='q-card__header' onClick={() => setOpen(o => !o)}>
@@ -58,15 +58,16 @@ const RoadMapDay = ({ day }) => (
 
 // ── Main Component ────────────────────────────────────────────────────────────
 const Interview = () => {
-    const [ activeNav, setActiveNav ] = useState('technical')
+    const [activeNav, setActiveNav] = useState('technical')
     const { report, getReportById, loading, getResumePdf } = useInterview()
     const { interviewId } = useParams()
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     useEffect(() => {
         if (interviewId) {
             getReportById(interviewId)
         }
-    }, [ interviewId ])
+    }, [interviewId])
 
 
 
@@ -85,17 +86,34 @@ const Interview = () => {
 
     return (
         <div className='interview-page'>
+            <div className="mobile-header">
+                <button
+                    className="hamburger"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                    ☰
+                </button>
+            </div>
+            {isMenuOpen && (
+                <div
+                    className="overlay"
+                    onClick={() => setIsMenuOpen(false)}
+                />
+            )}
             <div className='interview-layout'>
 
                 {/* ── Left Nav ── */}
-                <nav className='interview-nav'>
+                <nav className={`interview-nav ${isMenuOpen ? "open" : ""}`}>
                     <div className="nav-content">
                         <p className='interview-nav__label'>Sections</p>
                         {NAV_ITEMS.map(item => (
                             <button
                                 key={item.id}
                                 className={`interview-nav__item ${activeNav === item.id ? 'interview-nav__item--active' : ''}`}
-                                onClick={() => setActiveNav(item.id)}
+                                onClick={() => {
+                                    setActiveNav(item.id)
+                                    setIsMenuOpen(false)
+                                }}
                             >
                                 <span className='interview-nav__icon'>{item.icon}</span>
                                 {item.label}

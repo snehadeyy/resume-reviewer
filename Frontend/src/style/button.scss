@@ -1,20 +1,26 @@
-.button{
+.button {
     border: none;
     outline: none;
-    border-radius: 1rem;
-    padding-inline: 1.5rem;
-    padding-block: 0.75rem;
+    border-radius: clamp(0.5rem, 2vw, 1rem);
+    padding-inline: clamp(0.8rem, 3vw, 1.5rem);
+    padding-block: clamp(0.4rem, 2vw, 0.75rem);
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     cursor: pointer;
-
     transition: all 0.3s linear;
 
-    &.primary-button{
+    &.primary-button {
         background-color: #c4193b;
         color: #fff;
     }
 
-    &:active{
+    &:active {
         transform: scale(0.95);
         box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+}
+
+@media (max-width: 480px){
+    .button{
+        border-radius: 0.5rem;
     }
 }
