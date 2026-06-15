@@ -47,22 +47,33 @@ main {
 
 @media (max-width: 600px) {
     main {
-        min-height: calc(100vh - 600px);
-        padding-inline: 4rem;
-
-        
         .form-container {
-            padding-top: 15rem;
             width: clamp(280px, 90%, 400px);
-            
-            h1{
-                font-size: 28px;
-            }
+        }
+    }
+}
 
-            p{
-                font-size: 15px;
+@media (max-width: 400px) {
+    main {
+        padding-inline: 1rem;
+
+        .form-container {
+            width: 100%;
+            max-width: 100%;
+
+            h1,
+            p {
                 text-align: center;
             }
+
+            .input-group {
+                input {
+                    box-sizing: border-box;
+                    padding: 0.75rem 0.5rem;
+                    font-size: 0.9rem;
+                }
+            }
+
         }
     }
 }
