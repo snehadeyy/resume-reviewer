@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
+import { useAuth } from '../../auth/hooks/useAuth.js'
 
 const Home = () => {
 
@@ -9,8 +10,33 @@ const Home = () => {
     const [jobDescription, setJobDescription] = useState("")
     const [selfDescription, setSelfDescription] = useState("")
     const [selectedFile, setSelectedFile] = useState(null);
+    const [showProfile, setShowProfile] = useState(false)
+    const [showHistory, setShowHistory] = useState(false)
+
+    const { user, handleLogout } = useAuth()
 
     const resumeInputRef = useRef()
+    const profileRef = useRef()
+
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (
+                profileRef.current &&
+                !profileRef.current.contains(e.target)
+            ) {
+                setShowProfile(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        console.log(profileRef.current)
+
+        return () =>
+            document.removeEventListener(
+                "mousedown",
+                handleClickOutside
+            );
+    }, []);
 
     const navigate = useNavigate()
 
@@ -36,6 +62,38 @@ const Home = () => {
 
     return (
         <div className='home-page'>
+
+            {/* Nav Bar */}
+            <nav className='nav-bar'>
+                <div className='logo'>Interview <span>AI</span></div>
+                <ul className='nav-links'>
+                    {/* <li onClick={() => setShowHistory(!showHistory)}>History</li> */}
+                    <li className="profile-menu"
+                        ref={profileRef}
+                    >
+                        <button onClick={() => setShowProfile(!showProfile)}>
+                            Profile
+                        </button>
+
+                        {showProfile && (
+                            <div className="profile-card">
+                                <h3>{user?.username}</h3>
+                                <p>{user?.email}</p>
+
+                                {/* <hr /> */}
+
+                                <div className='profile-actions'>
+                                    <button>History</button>
+                                    <button onClick={() => {
+                                        handleLogout()
+                                    }}>Logout</button>
+                                </div>
+
+                            </div>
+                        )}
+                    </li>
+                </ul>
+            </nav>
 
             {/* Page Header */}
             <header className='page-header'>
