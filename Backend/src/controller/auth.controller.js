@@ -2,6 +2,7 @@ import { User } from "../model/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { tokenBlacklistModel } from "../model/blacklist.model.js"; 
+import transporter from "../config/mail.js";
 
 /**
  * @name registerUserController
@@ -139,4 +140,74 @@ const getMeController = async (req,res) =>{
         }
     })
 }
-export {registerUserController, loginUserController, logoutUserController, getMeController}
+
+/**
+ * @name forgotPasswordController
+ * @description resets the user's password
+ * @access private
+ */
+const forgotPasswordController = async (req,res) =>{
+    try{    
+        const { email } = req.body
+        const user = await User.findOne({email})
+
+        if(!user){
+            return res.status(404).json({
+                message: "user doesn't exist"
+            })
+        }
+
+        let otp = Math.floor(100000 + Math.random() * 900000).toString()
+        console.log(otp)
+        user.resetOtp = otp
+        user.otpExpiry = Date.now() + 5*60*1000 // 5 min expiry
+
+        await user.save()
+
+        const mailOption = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: "OTP for password reset",
+            text: `Your OTP is ${otp}`
+        }
+
+        await transporter.sendMail(mailOption)
+
+        res.status(200).json({
+            message: "otp sent to email successfully"
+        })
+    }
+    catch(err){
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+/**
+ * @name sendMailController
+ * @description sends mail to user
+ * @access private
+ */
+const sendMailController = async (req,res) =>{
+    try{
+        const { receiver } = req.body
+
+        const messageOption = {
+            from: process.env.EMAIL,
+            to: receiver,
+            subject: "Welcome to our application",
+            text: `Hello ${receiver}!`
+        }
+
+        const mailSend = await transporter.sendMail(messageOption)
+
+        res.status(200).json({
+            message: "email sent successfully"
+        })
+    }
+    catch(err){
+        res.status(500).json({error: err.message})
+    }
+}
+export {registerUserController, loginUserController, logoutUserController, getMeController, forgotPasswordController, sendMailController}

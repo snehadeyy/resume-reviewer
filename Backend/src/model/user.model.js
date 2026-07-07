@@ -15,7 +15,9 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    resetOtp: String,
+    otpExpiry: Date
 })
 
 export const User = mongoose.model("User",userSchema)
