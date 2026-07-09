@@ -158,7 +158,7 @@ const forgotPasswordController = async (req,res) =>{
         }
 
         let otp = Math.floor(100000 + Math.random() * 900000).toString()
-        console.log(otp)
+        // console.log(otp)
         user.resetOtp = otp
         user.otpExpiry = Date.now() + 5*60*1000 // 5 min expiry
 
@@ -182,6 +182,52 @@ const forgotPasswordController = async (req,res) =>{
             error: err.message
         })
     }
+}
+
+/**
+ * @name verifyOtpController
+ * @description verifies the otp with the email id
+ * @access private
+ */
+const verifyOtpController = async (req,res) =>{
+    const {email, otp} = req.body
+
+    const user = await User.findOne({email})
+
+    if(!user || user.resetOtp !== otp){
+        return res.status(400).json({message: "Invalid otp"})
+    }
+    if(user.otpExpiry < Date.now()){
+        return res.status(400).json({message: "OTP expired"})
+    }
+
+    res.status(200).json({message: "OTP verified"})
+}
+
+/**
+ * 
+ */
+const resetPasswordController = async (req,res) =>{
+    const {email, otp, newPassword} = req.body
+
+    const user = await User.findOne({email})
+
+    if(!user || user.resetOtp !== otp){
+        return res.status(400).json({message: "Invalid otp"})
+    }
+    if(user.otpExpiry < Date.now()){
+        return res.status(400).json({message: "OTP expired"})
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword,10)
+
+    user.password = hashedPassword
+    user.resetOtp = null
+    user.otpExpiry = null
+
+    await user.save()
+
+    return res.status(200).json({message: "Password reset successfully"})
 }
 
 /**
@@ -210,4 +256,4 @@ const sendMailController = async (req,res) =>{
         res.status(500).json({error: err.message})
     }
 }
-export {registerUserController, loginUserController, logoutUserController, getMeController, forgotPasswordController, sendMailController}
+export {registerUserController, loginUserController, logoutUserController, getMeController, forgotPasswordController, sendMailController, resetPasswordController, verifyOtpController}

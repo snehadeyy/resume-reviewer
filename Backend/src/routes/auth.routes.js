@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUserController, logoutUserController, registerUserController, getMeController, forgotPasswordController, sendMailController } from "../controller/auth.controller.js";
+import { loginUserController, logoutUserController, registerUserController, getMeController, forgotPasswordController, sendMailController, resetPasswordController, verifyOtpController } from "../controller/auth.controller.js";
 import authUser from "../middleware/auth.middleware.js";
 
 const authRouter = Router()
@@ -36,13 +36,30 @@ authRouter.get('/get-me', authUser, getMeController)
 
 /**
  * @route POST /api/auth/forgot-password
- * @description resets the user's password
+ * @description verifies user and send them otp to their registered email
  * @access private
  */
 authRouter.post('/forgot-password', forgotPasswordController)
 
 /**
- * 
+ * @route POST /api/auth/verify-otp
+ * @description verifies the otp that was sent to user's email
+ * @access private
+ */
+authRouter.post('/verify-otp', verifyOtpController)
+
+/**
+ * @route POST /api/auth/reset-password
+ * @description resets the user's password
+ * @access private
+ */
+authRouter.post('/reset-password', resetPasswordController)
+
+/**
+ * @route POST /api/auth/send-mail
+ * @description sends welcome message through registered email
+ * @access private
  */
 authRouter.post('/send-mail', sendMailController)
+
 export default authRouter
