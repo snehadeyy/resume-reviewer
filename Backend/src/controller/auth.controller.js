@@ -143,7 +143,7 @@ const getMeController = async (req,res) =>{
 
 /**
  * @name forgotPasswordController
- * @description resets the user's password
+ * @description generates otp for the registered email to reset the password
  * @access private
  */
 const forgotPasswordController = async (req,res) =>{
@@ -205,7 +205,9 @@ const verifyOtpController = async (req,res) =>{
 }
 
 /**
- * 
+ * @name resetPasswordController
+ * @description resets user's password
+ * @access private
  */
 const resetPasswordController = async (req,res) =>{
     const {email, otp, newPassword} = req.body
